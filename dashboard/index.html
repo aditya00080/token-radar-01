@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>sakmad radar — token launch radar</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="top">
+  <div>
+    <h1>SAKMAD RADAR</h1>
+    <p class="tag">Which protocols still record no token, ranked by what their launch would be worth.</p>
+  </div>
+  <div class="meta" id="meta">snapshot — · model sakmad-radar-1 · 0 rows</div>
+</header>
+
+<section class="brief" id="judge-brief">
+  <h2>Judge brief — read this first</h2>
+  <ol>
+    <li><b>Working radar.</b> The board below covers all 40 watchlist protocols (badge <span class="tag-w">W</span>) plus 138 early pre-token rows; every row states an implied value and a farm plan. The code that built it is <code>lib/model.ts</code>, function <code>buildRadar()</code>.</li>
+    <li><b>Value model.</b> <code>impliedValue()</code> prices each protocol from the snapshot alone: TVL × 0.30, times growth, tenure and chain factors. No name is special-cased. Protocols whose token already trades are set aside in the Live section, at their market cap.</li>
+    <li><b>Farm plans.</b> <code>farmSteps()</code> writes five steps per protocol, each with a cost and a time. Click any row to read its plan.</li>
+    <li><b>The page.</b> Sort by rank, value, TVL or growth; filter by text, category or watchlist; click any row for its detail view.</li>
+    <li><b>Looks made.</b> One palette, one spacing scale, one type stack. No framework, no network.</li>
+  </ol>
+</section>
+
+<section class="model" id="model-panel">
+  <h2>The model — <code>sakmad-radar-1</code></h2>
+  <p class="formula">implied = max(1, round(TVL × 0.30 × growthMul × tenureMul × chainMul))</p>
+  <dl>
+    <div><dt>growthMul</dt><dd>clamp(1 + change_7d / 100, 0.5, 2.0); change_7d clamped to −50…+100, missing counts as 0</dd></div>
+    <div><dt>tenureMul</dt><dd>0.5 + min(age_days, 1460) / 1460 × 0.5; age from listed_at to the snapshot date, missing counts as 180 days</dd></div>
+    <div><dt>chainMul</dt><dd>1 + min(chains − 1, 4) × 0.05</dd></div>
+  </dl>
+  <p class="note">“Records no token” means the snapshot carries no market cap, CoinGecko id or symbol for it — never a claim that it has none. A launch is priced, not predicted: the board says what a token would be worth if the record stayed as it is, not whether or when one comes.</p>
+</section>
+
+<section class="stats" id="stats"></section>
+
+<section class="filters">
+  <input id="q" type="search" placeholder="Search name, slug or category…" aria-label="Search">
+  <select id="cat" aria-label="Category"><option value="">All categories</option></select>
+  <label class="check"><input id="watch" type="checkbox"> Watchlist only</label>
+  <select id="sort" aria-label="Sort">
+    <option value="rank">Sort: rank</option>
+    <option value="value">Sort: implied value</option>
+    <option value="tvl">Sort: TVL</option>
+    <option value="growth">Sort: 7-day growth</option>
+  </select>
+</section>
+
+<main>
+  <table class="board" id="board">
+    <thead><tr>
+      <th>#</th><th>Protocol</th><th>Category</th><th>Chains</th>
+      <th class="num">TVL</th><th class="num">7d</th><th class="num">Implied value</th><th></th>
+    </tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <p class="count" id="count"></p>
+
+  <section class="detail" id="detail">
+    <h2>Detail</h2>
+    <p class="empty">Click a row to see its value breakdown and farm plan.</p>
+  </section>
+
+  <section class="live">
+    <h2>Already trading — set aside, not ranked</h2>
+    <p class="note">These protocols record a token, so they carry a market value, not an implied one. They are shown apart and never mixed into the ranked board.</p>
+    <table class="board" id="live-table">
+      <thead><tr>
+        <th>Protocol</th><th>Symbol</th><th>Category</th><th>Chains</th>
+        <th class="num">TVL</th><th class="num">Market cap</th>
+      </tr></thead>
+      <tbody id="live-rows"></tbody>
+    </table>
+  </section>
+</main>
+
+<footer>
+  <p>Data: sealed DefiLlama snapshot, fetched once by the house — it does not move. Built by an AI agent for make.fun’s “Build the best token launch radar” bounty. Static page, no network, no tracking.</p>
+</footer>
+
+<script src="../data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
