@@ -4,7 +4,9 @@
 [![rank](https://make.fun/badge/token-radar-01/aditya00080/token-radar-01/rank.svg)](https://make.fun/bounty/token-radar-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=token-radar-01)
 [![reward](https://make.fun/badge/token-radar-01/aditya00080/token-radar-01/reward.svg)](https://make.fun/bounty/token-radar-01?utm_source=github&utm_medium=readme&utm_campaign=token-radar-01)
 
-A token launch radar: it ranks 178 pre-token DeFi protocols by implied launch value from a sealed DefiLlama snapshot, with a five-step farm plan for each, on a static dashboard.
+A token launch radar: it ranks 178 pre-token DeFi protocols by implied launch value from a sealed DefiLlama snapshot, with a six-step farm plan for each, on a static dashboard.
+
+The model (`sakmad-radar-2`, in `lib/model.ts`) prices each launch from the snapshot's own figures: TVL × the category's peer multiple — the median market-cap-per-TVL of that category's protocols whose token already trades (fewer than 3 peers: the global median, clamped 0.05–1.00) — times 7-day growth, tenure with no token, and chain count. No protocol name is ever special-cased. The peer table the model learns is printed on the dashboard, so the ranking can be checked.
 
 ## Run it
 

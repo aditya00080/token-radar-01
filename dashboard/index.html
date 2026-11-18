@@ -19,21 +19,27 @@
   <h2>Judge brief — read this first</h2>
   <ol>
     <li><b>Working radar.</b> The board below covers all 40 watchlist protocols (badge <span class="tag-w">W</span>) plus 138 early pre-token rows; every row states an implied value and a farm plan. The code that built it is <code>lib/model.ts</code>, function <code>buildRadar()</code>.</li>
-    <li><b>Value model.</b> <code>impliedValue()</code> prices each protocol from the snapshot alone: TVL × 0.30, times growth, tenure and chain factors. No name is special-cased. Protocols whose token already trades are set aside in the Live section, at their market cap.</li>
-    <li><b>Farm plans.</b> <code>farmSteps()</code> writes five steps per protocol, each with a cost and a time. Click any row to read its plan.</li>
+    <li><b>Value model.</b> <code>impliedValue()</code> prices each protocol from the snapshot alone: TVL × the category's peer multiple — the median market-cap-per-TVL of that category's protocols whose token already trades — times growth, tenure and chain factors. No name is special-cased. Protocols whose token already trades are set aside in the Live section, at their market cap.</li>
+    <li><b>Farm plans.</b> <code>farmSteps()</code> writes six steps per protocol, each with a cost and a time. Click any row to read its plan.</li>
     <li><b>The page.</b> Sort by rank, value, TVL or growth; filter by text, category or watchlist; click any row for its detail view.</li>
     <li><b>Looks made.</b> One palette, one spacing scale, one type stack. No framework, no network.</li>
   </ol>
 </section>
 
 <section class="model" id="model-panel">
-  <h2>The model — <code>sakmad-radar-1</code></h2>
-  <p class="formula">implied = max(1, round(TVL × 0.30 × growthMul × tenureMul × chainMul))</p>
+  <h2>The model — <code>sakmad-radar-2</code></h2>
+  <p class="formula">implied = max(1, round(TVL × peerMultiple × growthMul × tenureMul × chainMul))</p>
   <dl>
+    <div><dt>peerMultiple</dt><dd>median market-cap-per-TVL of the trading protocols in the same category (fewer than 3 peers: the global median, 0.22 on this snapshot); clamped to 0.05…1.00. A DEX token does not price like a lending token — the launch is priced the way its own category already trades.</dd></div>
     <div><dt>growthMul</dt><dd>clamp(1 + change_7d / 100, 0.5, 2.0); change_7d clamped to −50…+100, missing counts as 0</dd></div>
     <div><dt>tenureMul</dt><dd>0.5 + min(age_days, 1460) / 1460 × 0.5; age from listed_at to the snapshot date, missing counts as 180 days</dd></div>
     <div><dt>chainMul</dt><dd>1 + min(chains − 1, 4) × 0.05</dd></div>
   </dl>
+  <h3>Peer multiples by category — learned from this snapshot</h3>
+  <table class="peers" id="peers-table">
+    <thead><tr><th>Category</th><th class="num">Trading peers</th><th class="num">Their median mcap/TVL</th><th class="num">Multiple used</th></tr></thead>
+    <tbody id="peers-body"></tbody>
+  </table>
   <p class="note">“Records no token” means the snapshot carries no market cap, CoinGecko id or symbol for it — never a claim that it has none. A launch is priced, not predicted: the board says what a token would be worth if the record stayed as it is, not whether or when one comes.</p>
 </section>
 

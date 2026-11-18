@@ -70,7 +70,7 @@ table.board { width: 100%; border-collapse: collapse; background: var(--panel); 
 .detail .empty { color: var(--muted); }
 .detail h3 { margin: 0 0 4px; font-size: 20px; }
 .detail .sub { color: var(--muted); font-size: 13.5px; margin: 0 0 12px; }
-.factors { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 12px 0; }
+.factors { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 12px 0; }
 .factor { background: var(--panel2); border-radius: 8px; padding: 10px 12px; }
 .factor b { display: block; font-size: 17px; font-variant-numeric: tabular-nums; }
 .factor span { color: var(--muted); font-size: 12px; }
@@ -80,6 +80,11 @@ table.board { width: 100%; border-collapse: collapse; background: var(--panel); 
 .live { margin-top: 26px; }
 .live table tbody tr { cursor: default; }
 footer { color: var(--muted); font-size: 13px; padding: 26px 24px 34px; }
+.model h3 { margin: 14px 0 6px; font-size: 15px; color: var(--amber); }
+table.peers { width: 100%; border-collapse: collapse; background: var(--panel2); border-radius: 8px; overflow: hidden; }
+.peers th, .peers td { padding: 6px 10px; text-align: left; border-bottom: 1px solid var(--line); font-size: 13.5px; }
+.peers th { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+.peers td.num, .peers th.num { text-align: right; font-variant-numeric: tabular-nums; }
 @media (max-width: 720px) {
   .stats { grid-template-columns: repeat(2, 1fr); }
   .factors { grid-template-columns: repeat(2, 1fr); }

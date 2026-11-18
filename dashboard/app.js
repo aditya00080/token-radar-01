@@ -60,6 +60,28 @@
       catSel.appendChild(o);
     });
 
+  // Peer multiples table, from the snapshot's own trading protocols.
+  var boardCats = {};
+  R.rows.forEach(function (r) {
+    boardCats[r.category || '(no category)'] = true;
+  });
+  var peersBody = document.getElementById('peers-body');
+  if (peersBody && R.peers) {
+    peersBody.innerHTML = R.peers.table
+      .filter(function (t) {
+        return boardCats[t.category];
+      })
+      .map(function (t) {
+        return (
+          '<tr><td>' + esc(t.category) + '</td>' +
+          '<td class="num">' + t.peers + '</td>' +
+          '<td class="num">' + (t.median == null ? '—' : t.median.toFixed(2) + '×') + '</td>' +
+          '<td class="num"><b>' + t.used.toFixed(2) + '×</b>' + (t.peers < M.peer_min_n ? ' <span style="color:var(--muted)">(global)</span>' : '') + '</td></tr>'
+        );
+      })
+      .join('');
+  }
+
   var selected = null;
 
   function filtered() {
@@ -116,7 +138,7 @@
     for (var i = 0; i < R.rows.length; i++) if (R.rows[i].slug === slug) r = R.rows[i];
     if (!r) return;
     selected = slug;
-    var base = r.tvl_usd * M.base_multiple;
+    var base = r.tvl_usd * r.peer_multiple;
     var g = growthMul(r);
     var t = tenureMul(r);
     var c = chainMul(r);
@@ -126,9 +148,10 @@
       (r.watchlist ? 'watchlist' : 'early find') + ' · ' + esc(r.category || 'no category') + ' · ' + esc(r.chains.join(', ')) + '</span></h3>' +
       '<p class="sub">Snapshot records no token for this protocol (no market cap, CoinGecko id or symbol). TVL ' +
       money(r.tvl_usd) + ' · 7-day change ' + (r.change_7d == null ? 'unreported' : r.change_7d.toFixed(1) + '%') +
-      ' · tracked ' + r.age_days + ' days.</p>' +
+      ' · tracked ' + r.age_days + ' days · peers price ' + (r.category || 'this category') + ' at ' + r.peer_multiple.toFixed(2) + '× TVL.</p>' +
       '<div class="factors">' +
-      '<div class="factor"><b>' + money(base) + '</b><span>base = TVL × 0.30</span></div>' +
+      '<div class="factor"><b>' + money(base) + '</b><span>base = TVL × ' + r.peer_multiple.toFixed(2) + ' (' + esc(r.category || 'no category') + ' peers)</span></div>' +
+      '<div class="factor"><b>× ' + r.peer_multiple.toFixed(2) + '</b><span>peer multiple</span></div>' +
       '<div class="factor"><b>× ' + g.toFixed(2) + '</b><span>growth (7d ' + (r.change_7d == null ? 'n/a' : r.change_7d.toFixed(1) + '%') + ')</span></div>' +
       '<div class="factor"><b>× ' + t.toFixed(2) + '</b><span>tenure (' + r.age_days + ' days)</span></div>' +
       '<div class="factor"><b>× ' + c.toFixed(2) + '</b><span>chains (' + r.chains.length + ')</span></div>' +
